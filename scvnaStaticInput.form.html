@@ -1,0 +1,1023 @@
+
+
+<div class="card shadow-sm bg-white rounded ml-3" >
+    <div class="card-header" style="height: 80px">
+        Sectio SPA Vasopressor Studie
+        <span class="float-right text-muted">
+            <button type="button" class="btn btn-light btn-sm" disabled>
+                Dirty: {{ scvnaForm.$dirty }}
+            </button>
+            <button type="button" class="btn btn-light btn-sm" disabled>
+                Status: {{ formStatus }}
+            </button>
+            <button type="button" class="btn btn-light btn-sm" disabled>
+                Subject ID: {{ subjectId }}
+            </button>
+            <button type="button" class="btn btn-light btn-sm" disabled>
+                Record ID: {{ recordId }}
+            </button>
+            <button type="button" ng-click="clearScvnaForm()"
+                auth-role-enable="scvna_write"
+                class="btn btn-outline-warning btn-sm ml-3">
+                Neuer Datensatz
+            </button>
+            <button type="button" ng-click="finalizeRecord()"
+                class="btn btn-outline-danger btn-sm ml-3"
+                ng-disabled="scvnaRecordForm.$invalid">
+                Abschließen
+            </button>
+            <button type="button" ng-click="saveScvnaRecord()"
+                class="btn btn-outline-success btn-sm ml-3"
+                ng-disabled="scvnaRecordForm.$invalid">
+                Speichern
+            </button>
+        </span>
+        <br>
+        <div class="mt-2">
+            <span class="text-secondary mr-1" style="display: inline-block; vertical-align: top;"
+                data-toggle="tooltip" data-placement="right"
+                title="Unterformular Status">
+                Status:
+            </span>
+            <indicator dirty="{{scvnaRecordForm.$dirty}}" valid="{{scvnaRecordForm.$valid}}" label="DT" href="#record-dt"></indicator>
+            <indicator dirty="{{scvnaSubjectForm.$dirty}}" valid="{{scvnaSubjectForm.$valid}}" label="PB"></indicator>
+            <indicator dirty="{{scvnaPatientForm.$dirty}}" valid="{{scvnaPatientForm.$valid}}" label="PD"></indicator>
+            <indicator dirty="{{scvnaOpCaseForm.$dirty}}" valid="{{scvnaOpCaseForm.$valid}}" label="OP"></indicator>
+            <indicator dirty="{{scvnaAnaForm.$dirty}}" valid="{{scvnaAnaForm.$valid}}" label="AN"></indicator>
+            <indicator dirty="{{scvnaBloodPressureForm.$dirty}}" valid="{{scvnaBloodPressureForm.$valid}}" label="BD"></indicator>
+            <indicator dirty="{{scvnaObsForm.$dirty}}" valid="{{scvnaObsForm.$valid}}" label="KL"></indicator>
+            <indicator dirty="{{scvnaVasopressorForm.$dirty}}" valid="{{scvnaVasopressorForm.$valid}}" label="BM"></indicator>
+            <indicator dirty="{{scvnaNewBornForm.$dirty}}" valid="{{scvnaNewBornForm.$valid}}" label="NG"></indicator>
+            <indicator dirty="{{scvnaPostOpForm.$dirty}}" valid="{{scvnaPostOpForm.$valid}}" label="BV"></indicator>
+            <indicator dirty="{{scvnaDermIschemiaForm.$dirty}}" valid="{{scvnaDermIschemiaForm.$valid}}" label="DI"></indicator>
+        </div>
+    </div>
+
+    <!--- ! This defines the total height of the card-content ! --->
+    <div style="height: 600px; overflow: auto;">
+    <form name="scvnaForm" id="scvnaForm">
+    
+    <!--- Record (DT)                       ----------------------------------->
+    <div class="card-body border-top" id="record-dt">
+    <div ng-form="scvnaRecordForm" name="scvnaRecordForm" id="scvnaRecordForm" 
+        class="needs-validation" novalidate>
+    <fieldset ng-disabled="!formEditable">
+        
+        <div class="row align-items-start">
+            <div class="col-2 text-secondary">
+                DT Datensatz
+            </div>
+            <div class="col-5">
+            <!--- mrn: medial record number ----------------------------------->
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Fallnummer.</label>
+                </div>
+
+                <input type="number" name="scvnaMrn"
+                    class="form-control science"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Bitte Barcode auf Patienten-Aufkleber einlesen"
+                    placeholder="Fallnummer" ng-required="true"
+                    ng-model="scvnaMrn">
+            </div>
+            </div>
+            
+            <div class="col-5">
+            <!--- opcase: anesthesia case number ------------------------------>
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Protoll-Nr.</label>
+                </div>
+
+                <input type="text" class="form-control science" name="scvnaOpcase"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Bitte Barcode auf Narkose-Protokoll einlesen"
+                    placeholder="Anaesthesie Protokoll-Nr" ng-required="true"
+                    ng-model="scvnaOpcase">
+            </div>
+            </div>
+        </div> <!-- row -->
+
+        <div class="row align-items-start mt-2">
+            <div class="col-2 text-secondary">
+                <span ng-if="scvnaRecordForm.$valid" 
+                    style="font-size:small;">
+                    OK
+                </span>
+                <span ng-if="scvnaRecordForm.$dirty" 
+                    style="font-size:small;">
+                    Dirty
+                </span>
+            </div>
+            <div class="col-5">
+            <!--- Operation date ---------------------------------------------->
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">OP-Datum.</label>
+                </div>
+                <input type="date" class="form-control science" 
+                    placeholder="TT.MM.JJJJ" ng-required="true"
+                    min="2019-01-01" max="2029-12-31"
+                    ng-keypress="keyPressDate($event)"
+                    ng-blur="calculateSubjectAge()"
+                    ng-model="scvnaDate">
+            </div>
+            </div>
+
+            <div class="col-5">
+            <!--- annam ------------------------------------------------------->
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Anästhesist.</label>
+                </div>
+                <input type="text" class="form-control science" 
+                    placeholder="Anästhesist" ng-required="true"
+                    ng-model="scvnaAnnam">
+            </div>
+            </div>
+        </div>      <!--- row       --->
+
+        
+    </fieldset>
+    </div>
+    </div>
+    
+    <!--- Subject (PB)                      ----------------------------------->
+    <div class="card-body border-top bg-light" id="subject-pb" ng-show="subjectVisible">
+    <div ng-form="scvnaSubjectForm" name="scvnaSubjectForm"  id="scvnaSubjectForm"
+        class="needs-validation" novalidate>
+    <fieldset ng-disabled="!formEditable">
+        
+        <div class="row mt-2">
+            <div class="col-2 text-secondary">
+                PB Personenbezogene Daten
+            </div>
+            
+            <div class="col-5">
+            <!--- first-name -------------------------------------------------->
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Vorname</label>
+                </div>
+                <input type="text" class="form-control science"
+                    placeholder="Vorname" name="scvnaFirstName"
+                    ng-model="scvnaFirstName">
+            </div>
+            </div>
+            
+            <div class="col-5">
+            <!--- last-name ----------------------------------------------->
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Nachname</label>
+                </div>
+                <input type="text" class="form-control science" 
+                    placeholder="Nachname"
+                    ng-model="scvnaLastName" name="scvnaLastName">
+            </div>
+            </div>
+        </div>      <!--- row --->
+    
+        <div class="row align-items-start mt-2">
+            <div class="col-2 text-secondary">
+                <span ng-if="scvnaSubjectForm.$valid" 
+                    style="font-size:small;">
+                    OK
+                </span>
+                <span ng-if="scvnaSubjectForm.$dirty" 
+                    style="font-size:small;">
+                    Dirty
+                </span>
+            </div>
+                
+            <div class="col-5">
+            <!--- birthdate --------------------------------------------------->
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Geburtsdatum</label>
+                </div>
+                <input type="text" class="form-control science" 
+                    placeholder="TT.MM.JJJJ" name="scvnaBirthDate"
+                    min="1960-01-01" max="2020-01-01"
+                    ng-blur="calculateSubjectAge()"
+                    ng-model="scvnaBirthDate">
+            </div>
+            </div>  <!--- col-4     --->
+        </div>      <!--- row       --->
+
+    </fieldset>
+    </div>
+    </div>
+    
+    <!--- Patient (PD)                      ----------------------------------->
+    <div class="card-body border-top" id="patient-pd">
+    <div ng-form="scvnaPatientForm" name="scvnaPatientForm"  id="scvnaPatientForm"
+        class="needs-validation" novalidate>
+    <fieldset ng-disabled="!formEditable">
+        
+        <div class="row align-items-start mt-2">
+            <div class="col-2 text-secondary">
+                PD Patienten Daten
+            </div>
+            <div class="col-5">
+            <!--- weight ------------------------------------------------------>
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Gewicht.</label>
+                </div>
+                <input type="number" class="form-control science" ng-min="30" ng-max="300"
+                    placeholder="Gewicht" name="scvnaWeight" ng-required="true"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Körpergewicht in Kilogramm"
+                    ng-model="scvnaWeight">
+                <div class="input-group-append" style="width:10%">
+                    <label class="input-group-text w-100">kg</label>
+                </div>
+            </div>
+            </div>
+            
+            <div class="col-5">
+            <!--- height ------------------------------------------------------>
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Größe.</label>
+                </div>
+                <input type="number" class="form-control science" ng-min="100" ng-max="250"
+                    placeholder="Größe" step="1" name="scvnaHeight" ng-required="true"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Körpergröße in Zentimeter"
+                    ng-model="scvnaHeight">
+                <div class="input-group-append" style="width:10%">
+                    <label class="input-group-text w-100">cm</label>
+                </div>
+            </div>
+            </div>
+        </div>
+        
+        <div class="row align-items-start mt-2">
+            <div class="col-2 text-secondary">
+            </div>
+                
+            <!--- patient age ------------------------------------------------->
+            <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Alter.</label>
+                </div>
+                <input type="number" class="form-control science"
+                    ng-min="10" ng-max="80" ng-required="true"
+                    placeholder="Jahre" step="1" name="scvnaSubjectAge"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Lebensalter in Jahren"
+                    ng-model="scvnaSubjectAge">
+                <div class="input-group-append" style="width:10%">
+                    <label class="input-group-text w-100">J</label>
+                </div>
+            </div>
+            </div>
+                
+            <!--- gestational age --------------------------------------------->
+            <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Gestationswoche</label>
+                </div>
+                <input type="number" class="form-control science"
+                    ng-min="18" ng-max="45"
+                    placeholder="Gestationswoche" step="1" name="scvnaGestAge"
+                    ng-model="scvnaGestAge">
+            </div>
+            </div>
+
+        </div><!--- row --->
+        <div class="row mt-2">
+        <div class="col-2 text-secondary">
+            <span ng-if="scvnaPatientForm.$valid" 
+                style="font-size:small;">
+                OK
+            </span>
+            <span ng-if="scvnaPatientForm.$dirty" 
+                style="font-size:small;">
+                Dirty
+            </span>
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Prä-eclampsie</label>
+                </div>
+                <select class="form-control science" ng-model="scvnaPreEclamp">
+                    <option value="0">Nein</option>
+                    <option value="1">Ja</option>
+                </select>
+            </div>
+        </div><!--- col --->
+        </div><!--- row --->
+    
+    </fieldset>
+    </div>     <!-- scvnaPatientForm   --->
+    </div>      <!--- card-body         --->
+
+    <!--- OP-Case (OP)                      ----------------------------------->
+    <div class="card-body border-top" id="opcase-op" >
+    <div ng-form="scvnaOpCaseForm" name="scvnaOpCaseForm" class="needs-validation" novalidate>
+    <fieldset ng-disabled="!formEditable">
+    
+    <div class="row mt-2">
+        <div class="col-2 text-secondary">
+            OP Daten
+        </div>
+        
+        <div class="col-5">
+        <!--- injection: Spinal anaesthesia injection time  --------------->
+        <div class="input-group">
+            <div class="input-group-prepend" style="width:40%">
+                <label class="input-group-text w-100">Injektion.</label>
+            </div>
+            <input type="time" class="form-control science" step="60" 
+                placeholder="HH:MM" id="scvnaInjection" ng-required="true"
+                ng-model="scvnaInjection">
+        </div>
+        </div>
+        
+        <div class="col-5">
+        <!--- birth ------------------------------------------------------->
+        <div class="input-group">
+            <div class="input-group-prepend" style="width:40%">
+                <label class="input-group-text w-100">Geburt.</label>
+            </div>
+            <input type="time" class="form-control science" step="60"
+                placeholder="HH:MM" ng-model="scvnaBirth"
+                ng-required="true">
+        </div>
+        </div>
+
+    </div> <!--- row --->
+
+    <div class="row mt-2">
+        <div class="col-2 text-secondary">
+            <div ng-if="scvnaOpCaseForm.$valid" 
+                    style="font-size:small;">
+                    OK
+            </div>
+        </div>
+        <div class="col-5">
+        <!--- begin-operation --------------------------------------------->
+        <div class="input-group">
+            <div class="input-group-prepend" style="width:40%">
+                <label class="input-group-text w-100">OP-Beginn</label>
+            </div>
+             <input type="time" class="form-control science" step="60"
+                placeholder="HH:MM" ng-model="scvnaBeginOp">
+        </div>
+        </div>
+        <div class="col-5">   
+        <!--- end of operation -------------------------------------------->
+        <div class="input-group">
+            <div class="input-group-prepend" style="width:40%">
+                <label class="input-group-text w-100">OP-Ende</label>
+            </div>
+            <input type="time" class="form-control science" step="60"
+                placeholder="HH:MM" ng-model="scvnaEndOp">
+        </div>
+        </div>
+    </div>      <!--- row --->
+    </div>     <!--- scvnaOpCaseForm --->
+    </fieldset>
+    </div>      <!--- card-body --->
+
+    <!--- Anaesthesia (AN)                  ----------------------------------->
+    <div class="card-body border-top" id="anaest-an">
+    <div ng-form="scvnaAnaForm" name="scvnaAnaForm" class="needs-validation" novalidate>
+    <fieldset ng-disabled="!formEditable">
+    <div class="row align-items-start">
+        <div class="col-2 text-secondary">
+            AN Anästhesie Daten
+        </div>
+        <div class="col-5">
+            <!--- Spinal segment --->
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Spinal-segment.</label>
+                </div>
+                <select class="form-control science" ng-model="scvnaSpSeg"
+                     ng-required="true">
+                    <option value="l1">L1/2</option>
+                    <option value="l2">L2/3</option>
+                    <option value="l3">L3/4</option>
+                    <option value="l4">L4/5</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Zugang</label>
+                </div>
+                <select class="form-control science" ng-model="scvnaApproach">
+                    <option value="med">Median</option>
+                    <option value="lat">Lateral</option>
+                </select>
+            </div>
+        </div>  <!--- col --->
+    </div>      <!--- row --->
+    
+    <div class="row align-items-start mt-2">
+        <div class="col-2">
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Lokalanästhetikum.</label>
+                </div>
+                <select class="form-control science" ng-model="scvnaLaSub"
+                     ng-required="true">
+                    <option value="bupi">Bupivacain</option>
+                    <option value="ropi">Ropivacain</option>
+                </select>
+            </div>
+        </div>
+        
+        <!--- LA Dosage ----------------------------------->
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Dosis.</label>
+                </div>
+
+                <input type="number" class="form-control science"
+                    name="scvnaLaDose"
+                    placeholder="LA Dosis" ng-required="true"
+                    ng-min="5" ng-max="20"
+                    ng-model="scvnaLaDose">
+                <div class="input-group-append" style="width:10%">
+                    <label class="input-group-text w-100">mg</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row align-items-start mt-2">
+        <div class="col-2">
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Opiat.</label>
+                </div>
+                <select class="form-control science" ng-model="scvnaOpSub"
+                     ng-required="true">
+                    <option value="suf">Sufentanil</option>
+                    <option value="fen">Fentanyl</option>
+                    <option value="0">Kein Opiat</option>
+                </select>
+            </div>
+        </div>
+        
+        <!--- Opiate dosage --------------------------------------------------->
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Dosis.</label>
+                </div>
+
+                <input type="number" class="form-control science"
+                    name="scvnaOpDose"
+                    placeholder="Opiat Dosis" ng-required="true"
+                    ng-min="0" ng-max="20"
+                    ng-model="scvnaOpDose">
+                <div class="input-group-append" style="width:10%">
+                    <label class="input-group-text w-100">µg</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row align-items-start mt-2">
+        <div class="col-2">
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Punktionsort-Wechsel</label> 
+                </div>
+                <select class="form-control science" ng-model="scvnaSpaLocChange">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">
+                        Links-Seitenlage
+                    </label> 
+                </div>
+                <select class="form-control science"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Links Seitenlage in Grad"
+                    ng-model="scvnaSpaLeftTilt">
+                    <option value="0"> 0</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                    <option value="25">25</option>
+                    <option value="30">30</option>
+                </select>
+                <div class="input-group-append" style="width:10%">
+                    <label class="input-group-text w-100"
+                        style="font-size:small">
+                        Grad
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div><!--- row -->
+    
+    <div class="row align-items-start mt-2">
+        <div class="col-2 text-secondary">
+            <div ng-if="scvnaAnaForm.$valid" 
+                    style="font-size:small;">
+                    OK
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Analgesie</label>
+                </div>
+                <select class="form-control science" ng-model="scvnaSpq">
+                    <option value="0">Nur Regional</option>
+                    <option value="AnAlg">Regional + Analgesie</option>
+                    <option value="ITN">Regional + ITN</option>
+                </select>
+            </div>
+        </div>
+        
+    </div>      <!--- row -->
+    </fieldset>
+    </div>     <!-- scvnaAnaForm -->
+    </div>      <!--- card-body --->
+
+    <!--- Blood-pressure (BD)               ----------------------------------->
+    <div class="card-body border-top" id="bloodpr-bd">
+    <div ng-form="scvnaBloodPressureForm" name="scvnaBloodPressureForm" class="needs-validation" novalidate>
+    <fieldset ng-disabled="!formEditable">
+    <div class="row align-items-start mt-3">
+        <div class="col-2 text-secondary">
+            BD Blutdruck
+        </div>
+        <div class="col-10">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:25%">
+                    <label class="input-group-text w-100">Prä-OP</label>
+                </div>
+                
+                <input type="number" class="form-control science"
+                    ng-required="true" min="20" max="400"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Systolischer arterieller Blutdruck (mmHg)"
+                    placeholder="Systole" ng-model="scvnaRrSysPre">
+                    
+                <input type="number" class="form-control science"
+                    min="20" max="400"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Diastolisher arterieller Blutdruck (mmHg)"
+                    placeholder="Diastole" ng-model="scvnaRrDiaPre">
+                
+                <input type="number" class="form-control science"
+                    min="20" max="400"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Arterieller Mitteldruck (mmHg)"
+                    placeholder="Mittel" ng-model="scvnaRrMeanPre">
+                
+                <div class="input-group-append" style="width:15%">
+                    <label class="input-group-text w-100">mmHg</label>
+                </div>
+                
+            </div>
+        </div><!--- col-4 --->
+    </div>
+    
+    <div class="row align-items-start mt-3">
+        <div class="col-2">
+        </div>
+        <div class="col-10">
+            
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:25%">
+                    <label class="input-group-text w-100">RR Minimal</label>
+                </div>
+                
+                <input type="number" class="form-control science"
+                    ng-required="true" min="20" max="400"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Systolischer arterieller Blutdruck (mmHg)"
+                    placeholder="Systole" ng-model="scvnaRrSysMin">
+                
+                <input type="number" class="form-control science"
+                    min="20" max="400"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Diastolisher arterieller Blutdruck (mmHg)"
+                placeholder="Diastole" ng-model="scvnaRrDiaMin">
+                
+                <input type="number" class="form-control science"
+                    min="20" max="400"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Arterieller Mitteldruck (mmHg)"
+                    placeholder="Mittel" ng-model="scvnaRrMeanMin">
+                
+                <div class="input-group-append" style="width:15%">
+                    <label class="input-group-text w-100">mmHg</label>
+                </div>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+    <div class="row align-items-start mt-3">
+        <div class="col-2 text-secondary">
+            <div ng-if="scvnaBloodPressureForm.$valid" 
+                    style="font-size:small;">
+                    OK
+            </div>
+        </div>
+        <div class="col-10">
+            
+                <div class="input-group mt-2">
+                    <div class="input-group-prepend" style="width:25%">
+                        <label class="input-group-text w-100">RR Maximal</label>
+                    </div>
+                    
+                    <input type="number" class="form-control science"
+                        ng-required="true" min="20" max="400"
+                        data-toggle="tooltip" data-placement="bottom"
+                        title="Systolischer arterieller Blutdruck (mmHg)"
+                        placeholder="Systole" ng-model="scvnaRrSysMax">
+                    
+                    <input type="number" class="form-control science"
+                        min="20" max="400"
+                        data-toggle="tooltip" data-placement="bottom"
+                        title="Diastolisher arterieller Blutdruck (mmHg)"
+                        placeholder="Diastole" ng-model="scvnaRrDiaMax">
+                    
+                    <input type="number" class="form-control science"
+                        min="20" max="400"
+                        data-toggle="tooltip" data-placement="bottom"
+                        title="Arterieller Mitteldruck (mmHg)"
+                        placeholder="Mittel" ng-model="scvnaRrMeanMax">
+                    
+                    <div class="input-group-append" style="width:15%">
+                        <label class="input-group-text w-100">mmHg</label>
+                    </div>
+                </div>
+            
+        </div>      <!--- col-8 --->
+    </div>          <!--- row --->
+    </fieldset>
+    </div>
+    </div>      <!--- card-body --->
+    
+    <!--- Clinical observations (KL)        ----------------------------------->
+    <div class="card-body border-top" id="clinobs-kl">
+    <div ng-form="scvnaObsForm" name="scvnaObsForm" class="needs-validation" novalidate>
+    <fieldset ng-disabled="!formEditable">
+    <div class="row align-items-start mt-3">
+        <div class="col-2 text-secondary">
+            KL Klinische Parameter
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                        <label class="input-group-text w-100">Übelkeit.</label>
+                </div>
+                <select class="form-control science"
+                    ng-model="scvnaNausea" ng-required="true">
+                    <option value="0">Nein</option>
+                    <option value="1">Ja</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-5">
+            
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                        <label class="input-group-text w-100">Erbrechen.</label>
+                </div>
+                <select class="form-control science" ng-model="scvnaVomit"
+                    ng-required="true">
+                    <option value="0">Nein</option>
+                    <option value="1">Ja</option>
+                </select>
+            </div>
+            
+        </div>
+    </div>  <!--- row --->
+        
+    <div class="row align-items-start mt-3">
+        <div class="col-2 text-secondary">
+            <div ng-if="scvnaObsForm.$valid" 
+                    style="font-size:small;">
+                    OK
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                        <label class="input-group-text w-100">Schwindel</label>
+                </div>
+                <select class="form-control science" ng-model="scvnaDizziness">
+                    <option value="0">Nein</option>
+                    <option value="1">Ja</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Ondansetron</label>
+                </div>
+
+                <input type="number" class="form-control science"
+                    name="scvnaOndaDose"
+                    placeholder="Dosis"
+                    ng-min="0" ng-max="20"
+                    ng-model="scvnaOndaDose">
+                <div class="input-group-append" style="width:10%">
+                    <label class="input-group-text w-100">mg</label>
+                </div>
+            </div>
+        </div>
+    </div>  <!--- row --->
+
+    </fieldset>
+    </div>
+    </div>      <!--- card-body --->
+
+    <!--- Blood pressure medication (BM)    ----------------------------------->
+    <div class="card-body border-top" id="bpmed-bm">
+    <div ng-form="scvnaVasopressorForm" name="scvnaVasopressorForm" class="needs-validation" novalidate>
+    <fieldset ng-disabled="!formEditable">
+    <div class="row align-items-start mt-3">
+        <div class="col-2 text-secondary">
+            BM Blutdruck Medikation
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Akrinor.</label>
+                </div>
+                <input type="number" class="form-control science"
+                    min="0" max="100"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Gesamt-Dosis Akrinor der 1:5 (auf 10 ml) verdünnten Lösung"
+                    ng-model="scvnaDoseAkri" ng-required="true">
+                <div class="input-group-append" style="width:20%">
+                    <label class="input-group-text w-100">ml</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-5">
+        </div>
+    </div>  <!--- row --->
+
+    <div class="row align-items-start mt-3">
+        <div class="col-2">
+        </div>
+        <div class="col-5">
+        
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">NA Minimal</label>
+                </div>
+                <input type="text" class="form-control science"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Noradrenalin: Minimale intraoperative Perfusor Laufrate (20 µg/ml)"
+                    ng-model="scvnaNaMin">
+                <div class="input-group-append" style="width:20%">
+                    <label class="input-group-text w-100">ml/h</label>
+                </div>
+            </div>
+        
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">NA Maximal.</label>
+                </div>
+                <input type="text" class="form-control science" ng-required="true"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Noradrenalin: Maximale intraoperative Perfusor Laufrate (20 µg/ml)"
+                    ng-model="scvnaNaMax">
+                <div class="input-group-append" style="width:20%">
+                    <label class="input-group-text w-100">ml/h</label>
+                </div>
+            </div>
+        </div>
+    </div> <!--- row --->
+
+    <div class="row align-items-start mt-3">
+        <div class="col-2">
+        </div>
+        
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">NA OP-Ende</label>
+                </div>
+                <input type="text" class="form-control science"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Noradrenalin: Perfusor Laufrate (20 µg/ml) bei OP-Ende"
+                    ng-model="scvnaNaOpEnd">
+                <div class="input-group-append" style="width:20%">
+                    <label class="input-group-text w-100">ml/h</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">NA Gesamt</label>
+                </div>
+                <input type="text" class="form-control science"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Noradrenalin Perfusor (20 µg/ml): Intraoperative Gesamtmenge"
+                    ng-model="scvnaNaTotal">
+                <div class="input-group-append" style="width:20%">
+                    <label class="input-group-text w-100">ml</label>
+                </div>
+            </div>
+        </div>
+        
+    </div>  <!--- row --->
+
+    <div class="row align-items-start mt-3">
+        <div class="col-2 text-secondary">
+            <div ng-if="scvnaVasopressorForm.$valid" 
+                    style="font-size:small;">
+                    OK
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="input-group">
+                <div class="input-group-prepend" style="width:40%">
+                        <label class="input-group-text w-100">Antihypertensiva</label>
+                </div>
+                <select class="form-control science" ng-model="scvnaAntiHtn"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="Intraoperative Gabe von Antihypertensiva">
+                    <option value="0">Nein</option>
+                    <option value="1">Ja</option>
+                </select>
+            </div>
+        </div>
+    </div>  <!--- row --->
+    </fieldset>
+    </div>
+    </div>      <!--- card-body --->
+
+    <!--- Newborn (NG)                      ----------------------------------->
+    <div class="card-body border-top" id="newborn-ng">
+    <div ng-form="scvnaNewBornForm" name="scvnaNewBornForm" class="needs-validation" novalidate>
+    <fieldset ng-disabled="!formEditable">
+        <div class="row align-items-start">
+            <div class="col-2 text-secondary">
+                NG Neugeborenen Daten
+            </div>
+            <div class="col-10">
+                <div class="input-group">
+                    <div class="input-group-prepend" style="width:20%">
+                        <label class="input-group-text w-100">APGAR.</label>
+                    </div>
+                    <input type="number" class="form-control science"
+                        min="0" max="10" ng-required="true"
+                        data-toggle="tooltip" data-placement="right"
+                        title="APGAR 1 Minute"
+                        ng-model="scvnaApgar1" placeholder="1 Minute">
+                    <input type="number" class="form-control science"
+                        min="0" max="10"
+                        data-toggle="tooltip" data-placement="right"
+                        title="APGAR 5 Minuten"
+                        ng-model="scvnaApgar2" placeholder="5 Minuten">
+                    <input type="number" class="form-control science"
+                        min="0" max="10"
+                        data-toggle="tooltip" data-placement="right"
+                        title="APGAR 10 Minuten"
+                        ng-model="scvnaApgar3" placeholder="10 Minuten">
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-start mt-2">
+            <div class="col-2 text-secondary">
+                <div ng-if="scvnaNewBornForm.$valid" 
+                    style="font-size:small;">
+                    OK
+            </div>
+            </div>
+            <div class="col-5">
+                <div class="input-group">
+                    <div class="input-group-prepend" style="width:40%">
+                        <label class="input-group-text w-100">Gewicht</label>
+                    </div>
+                    <input type="text" class="form-control science"
+                            ng-model="scvnaNbWeight">
+                    <div class="input-group-append">
+                        <label class="input-group-text">g</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    </div>
+    </div>      <!--- card-body --->
+
+    <!--- Blood loss (BV)                   ----------------------------------->
+    <div class="card-body border-top" id="bloodloss-bv">
+    <div ng-form="scvnaPostOpForm" name="scvnaPostOpForm" class="needs-validation" novalidate>
+    <fieldset ng-disabled="!formEditable">
+        <div class="row align-items-start mt-2">
+            <div class="col-2 text-secondary">
+                BV Blutverlust
+            </div>
+            <div class="col-5">
+                <div class="input-group">
+                    <div class="input-group-prepend" style="width:40%">
+                        <label class="input-group-text w-100">Intra-OP.</label>
+                    </div>
+                    <input type="text" class="form-control science"
+                        ng-required="true"
+                        ng-model="scvnaIoblv">
+                    <div class="input-group-append">
+                        <label class="input-group-text">ml</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-5">
+                <div class="input-group">
+                    <div class="input-group-prepend" style="width:40%">
+                        <label class="input-group-text w-100">Post-OP</label>
+                    </div>
+                    <input type="text" class="form-control science"
+                            ng-model="scvnaPoblv">
+                    <div class="input-group-append">
+                        <label class="input-group-text">ml</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    </div>
+    </div>      <!--- card-body --->
+    
+    <!--- Dermal ischemia (DI)              ----------------------------------->
+    <div class="card-body border-top" id="dermisch-di" name="dermisch-di">
+    <div ng-form="scvnaDermIschemiaForm" name="scvnaDermIschemiaForm" class="needs-validation" novalidate>
+    <fieldset ng-disabled="!formEditable">
+        <div class="row align-items-start mt-2">
+            <div class="col-2 text-secondary">
+                DI Dermale ischämie
+            </div>
+            <div class="col-5">
+                <div class="input-group">
+                    <div class="input-group-prepend" style="width:40%">
+                            <label class="input-group-text w-100">Intraoperativ.</label>
+                    </div>
+                    <select class="form-control science" ng-model="scvnaDiiop"
+                        ng-required="true">
+                        <option value="0">Nein</option>
+                        <option value="1">Ja</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-5">
+                <div class="input-group">
+                    <div class="input-group-prepend" style="width:40%">
+                        <label class="input-group-text w-100">
+                            Postoperativ
+                        </label>
+                    </div>
+                    <select class="form-control science" ng-model="scvnaDipinf">
+                        <option value="0">Nein</option>
+                        <option value="1">Ja</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    </div>
+    </div>      <!--- card-body --->
+
+    </form>     <!--- form      --->
+    </div>      <!--- height    --->
+</div>          <!--- card      --->

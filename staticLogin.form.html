@@ -1,0 +1,38 @@
+<form id="staticUserLoginForm">
+    
+    <!--- user name ----------------------------------------------------------->
+    <div class="form-group" id="selUserName">
+        <label for="username">User:</label>
+        <input class="form-control" type="text" list="userList",
+            autocomplete=off id="staticLoginUserName" name="loginUserName"
+            ng-model="staticLoginUserName"
+            placeholder="Select Username...">
+        <datalist id="userList">
+            <option data-ng-repeat="user in userData.activeUsers">{{user.name}}</option>
+        </datalist>
+    </div>
+
+    <!--- password ----------------------------------------------- user name -->
+    <div class="form-group">
+        <label for="loginPasswordId">Password:</label>
+              
+        <input type="password" class="form-control" 
+            placeholder="Enter Password" name="loginPassword"
+            ng-model="staticLoginPassword"
+            id="staticLoginPassword">
+    </div>
+    <!--- submit button ------------------------------------------ password --->
+    <div class="form-group">
+        <button ng-click="submit()"
+            class="btn btn-outline-success my-2 my-sm-0">
+            Submit
+        </button>
+
+        <button type="button" ng-click="clearForm()"
+            class="btn btn-outline-danger my-2 my-sm-0">
+            Cancel
+        </button>
+        
+        <button class="btn btn-outline-info" ng-click="logout()">Logout</button>
+    </div>
+</form>

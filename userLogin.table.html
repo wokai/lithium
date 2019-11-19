@@ -1,0 +1,33 @@
+<style>
+
+tbody {
+    height: 250px;
+    display:block;
+    overflow-y: scroll;
+}    
+    
+th, td {
+    font-size: 14px;
+}
+
+</style>
+<!----------------------------------------------------------------------------->
+<table class="table table-sm" style="width:100%">
+    <thead>
+        <tr class="d-flex">
+            <th class="col-2">Login-ID</th>
+            <th class="col-3">Date</th>
+            <th class="col-3">Time</th>
+        </tr>
+    </thead>
+    <tbody ng-if="userLoginTable.logins.length">
+        <tr ng-repeat="login in userLoginTable.logins" class="d-flex">
+            <td class="col-2">{{ login.id }}</td>
+            <td class="col-3">{{ toDate(login.date) | date:'dd.MM.yyyy' }}</td>
+            <td class="col-3">{{ toDate(login.date)  | date:'HH:mm:ss' }}</td>
+        </tr>
+    </tbody>
+    <tbody ng-if="!userLoginTable.logins.length">
+        <td colspan="3" class="text-center">No user data</td>
+    </tbody>
+</table>

@@ -1,0 +1,67 @@
+<style>
+
+tbody {
+    height: 250px;
+    display:block;
+    overflow-y: scroll;
+}    
+    
+th, td {
+    font-size: 14px;
+}
+
+</style>
+<!----------------------------------------------------------------------------->
+<div class="row mb-2">
+    <div class="col-md-8">
+        <input type="text" placeholder="Search..." id="searchInput"
+                        class="form-control" ng-model="searchtext">
+    </div>
+    <div class="col-md-4">
+        <modal-user-registration></modal-user-registration>
+    </div>
+</div>
+
+
+<table class="table table-sm" style="width:100%">
+    <thead>
+        <tr class="d-flex">
+            <th class="col-1">ID</th>
+            <th class="col-1">User name</th>
+            <th class="col-2">Last name</th>
+            <th class="col-2">Role</th>
+            <th class="col-2">Expir date</th>
+            <th class="col-2">Password</th>
+            <th class="col-1">Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-hide="userData.allUsers.length">
+            <td colspan="5" class="text-center">No user data</td>
+        </tr>
+        <tr ng-show="userData.allUsers.length" 
+                ng-repeat="user in userData.allUsers | filter: searchtext" class="d-flex">
+            <td class="col-1">{{ user.id }}</td>
+            <td class="col-1">{{ user.username }}</td>
+            <td class="col-2">{{ user.lastname }}</td>
+            <td class="col-2">{{ user.role }}</td>
+            <td class="col-2">{{ user.expirdate }}</td>
+            <td class="col-2">
+                <button type="button" 
+                    class="btn btn-outline-secondary btn-sm m-0"
+                    ng-click="showResetForm(user)">
+                    Reset
+                </button>
+            </td>
+            <td class="col-1">
+                <button type="button" 
+                    class="btn btn-outline-primary btn-sm m-0"
+                    ng-click="showEditUserDataForm(user)">
+                    Edit
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<modal-user-edit-form></modal-user-edit-form>
+<modal-user-reset-password></modal-user-reset-password>

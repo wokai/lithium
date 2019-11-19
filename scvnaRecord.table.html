@@ -1,0 +1,36 @@
+<div class="card shadow-sm">
+<div class="card-header" style="height: 80px">
+    Gespeicherte Datensätze:  {{recordTable.length}}
+</div>
+
+<!--- ! This defines the total height of the card-content ! --->
+<div style="height: 500px; overflow: auto;">
+<div class="card-body">
+<table class="table table-sm" style="width:100%">
+    <thead>
+        <tr class="d-flex">
+            <th class="col-2">ID</th>
+            <th class="col-3">MRN</th>
+            <th class="col-4">Date</th>
+            <th class="col-2"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-show="recordTable.length" 
+                ng-repeat="record in recordTable" class="d-flex">
+            <td class="col-2">{{ record.id }}</td>
+            <td class="col-3">{{ record.mrn }}</td>
+            <td class="col-4">{{ formatDate(record.date) }}</td>
+            <td class="col-2">
+            <button type="button"  ng-click="setRecord(record.id)"
+                auth-role-enable="scvna_read"
+                class="btn btn-outline-primary btn-sm ml-3">
+                Edit
+            </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>      <!--- card-body     --->
+</div>      <!--- height        --->
+</div>      <!--- card          --->
