@@ -1,0 +1,144 @@
+<div class="modal fade" name="modalUserRegForm" role="dialog">
+    <div class="modal-dialog">
+    <!-- Modal content -------------------------------------------------------->
+    <div class="modal-content">
+        
+        
+        <!-- modal header ----------------------------------------------------->
+        <div class="modal-header">
+            <h4 class="modal-title">User registration</h4>
+            <button type="button" class="close" ng-click="hide()" 
+                data-dismiss="modal" tabindex="-1">
+                    &times;
+                </button>
+        </div>
+        <!-- modal body ------------------------------------------------------->
+        <div class="modal-body" ng-form="userRegistrationForm">
+            
+            
+            <!--- user-name  minlength=3 -------------------------------------->
+            <div class="form-group row">
+                <div class="col-4">
+                    <label>User name</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control"
+                    minlength="3"
+                    ng-model="user.userName" ng-required="true"
+                    ng-class="{'is-valid': status.success, 'is-invalid' : status.userExist}"
+                    placeholder="User name"
+                    data-toggle="tooltip" data-placement="bottom" 
+                    title="Benutzername zur Anmeldung">
+                </div>
+            </div>
+            
+            <!--- user-first-name --------------------------------------------->
+            <div class="form-group row">
+                <div class="col-4">
+                    <label>First name</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" 
+                        ng-model="user.firstName"
+                        placeholder="First name" 
+                        data-toggle="tooltip" data-placement="bottom" 
+                        title="Vorname">
+                </div>
+            </div>
+            
+            <!--- user-last-name ---------------------------------------------->
+            <div class="form-group row">
+                <div class="col-4">
+                    <label>Last name</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" 
+                        ng-model="user.lastName" ng-required="true"
+                        placeholder="Last name"
+                        data-toggle="tooltip" data-placement="bottom" 
+                        title="Nachname">
+                </div>
+            </div>
+            
+            <!--- user-external-id -------------------------------------------->
+            <div class="form-group row">
+                <div class="col-4">
+                    <label>External ID</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" 
+                        ng-model="user.externalId"
+                        placeholder="External id"
+                        data-toggle="tooltip" data-placement="bottom" 
+                        title="Identifikation (optional)">
+                </div>
+            </div>
+            
+            <!--- user-role --------------------------------------------------->
+            <div class="form-group row">
+                <div class="col-4">
+                    <label>User role</label>
+                </div>
+                <div class="col-8">
+                    <select class="form-control" 
+                        ng-model="user.role" ng-required="true"
+                        ng-options="role.name for role in userData.userRoles">
+                    </select>
+                </div>
+            </div>
+            
+            <!--- user account expiration date -------------------------------->
+            <div class="form-group row">
+            <div class="col-4">
+                <label>Expiration date</label>
+            </div>
+
+            <div class="col-8">
+            <input type="text" class="form-control" 
+                ng-model="user.expirDate" 
+                placeholder="DD.MM.YYYY"
+                pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])\.(0[1-9]|1[0-2])\.(19|20)[0-9]{2}"
+                data-toggle="tooltip" data-placement="bottom" 
+                title="Auslaufdatum für Benutzerkonto"/>
+            </div>
+            </div>
+            
+            
+            <!--- password ---------------------------------------------------->
+            <div class="form-group row" ng-show="status.submitted">
+            <div class="col-4">
+                <label>Password</label>
+            </div>
+            
+            <div class="col-8">
+            <input type="text" class="form-control bg-transparent"
+                ng-model="user.passWord" placeholder="Password"
+                data-toggle="tooltip" data-placement="bottom" 
+                title="Wird bei Registrierung zurück gegeben" disabled
+                ng-class="{'is-valid': status.success, 'is-invalid' : status.failed}">
+            </div>
+            </div>
+            
+            <div class="text-secondary ml-1" 
+                    style="font-size: small;">
+                    {{ status.message }}
+            </div>
+        </div>
+        <!-- modal footer ----------------------------------------------------->
+        <div class="modal-footer">
+            <button type="submit" ng-show="!status.submitted"
+                class="btn btn-outline-success my-2 my-sm-0" ng-click="submit()"
+                ng-disabled="userRegistrationForm.$invalid"
+                id="loginSubmit">
+                    Submit
+            </button>
+
+            <button type="button" class="btn btn-outline-danger my-2 my-sm-0" 
+                ng-click="hide()" data-dismiss="modal">
+                    Close
+            </button>
+        </div>
+        
+    </div><!------------------------------------------------- modal content --->
+    </div><!-------------------------------------------------- modal dialog --->
+</div>

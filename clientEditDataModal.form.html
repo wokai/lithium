@@ -1,0 +1,88 @@
+<div class="modal fade" name="modalClientEditForm" role="dialog">
+    <div class="modal-dialog">
+    <!-- Modal content -------------------------------------------------------->
+    <div class="modal-content">
+        
+        <!-- modal header ----------------------------------------------------->
+        <div class="modal-header">
+            <h5 class="modal-title">Edit User: {{ modalClientEditUserName }} </h5>
+            <button type="button" class="close" ng-click="hide()" 
+                data-dismiss="modal" tabindex="-1">
+                    &times;
+            </button>
+            <br>
+            
+        </div>
+        <!-- modal body --------------------------------------- modal header -->
+        <div class="modal-body">
+            
+            <div class="form-group row">
+                <div class="col-6">
+                    <label>User ID: {{modalClientEditUserId}}</label>
+                </div>
+                <div class="col-6">
+                    <label>Expiration date: {{modalClientEditExpirDate}}</label>
+                </div>
+            </div>
+            
+            <!--- user-first-name --------------------------------------------->
+            <div class="form-group row">
+                <div class="col-4">
+                    <label for="modalClientEditUserFirstName">First name</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" 
+                        placeholder="First name"
+                        ng-model="modalClientEditFirstName"
+                        id="modalClientEditUserFirstName">
+                </div>
+            </div>
+            
+            <!--- user-last-name ---------------------------------------------->
+            <div class="form-group row">
+                <div class="col-4">
+                    <label for="modalClientEditLastName">Last name</label>
+                </div>
+                
+                <div class="col-8">
+                    <input type="text" class="form-control" 
+                        placeholder="Last name"
+                        ng-model="modalClientEditLastName"
+                        id="modalClientEditLastName">
+                </div>
+            </div>
+            
+            <!--- user-external-id -------------------------------------------->
+            <div class="form-group row">
+                <div class="col-4">
+                    <label for="modalClientEditExternalId">External Id:</label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" 
+                        placeholder="External id"
+                        ng-model="modalClientEditExternalId"
+                        id="modalClientEditExternalId">
+                </div>
+            </div>
+            
+        </div>
+        <!-- modal footer ------------------------------------- modal header -->
+        <div class="modal-footer">
+            <button type="submit" 
+                class="btn btn-outline-success" 
+                ng-click="submit()"
+                id="loginSubmit">
+                    Submit
+            </button>
+
+            <button type="button" 
+                class="btn btn-outline-danger" 
+                ng-click="hide()" data-dismiss="modal">
+                    Close
+            </button>
+        </div>
+    </div><!------------------------------------------------- modal content --->
+    </div><!-------------------------------------------------- modal dialog --->
+</div>
+
+

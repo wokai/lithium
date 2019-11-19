@@ -1,0 +1,103 @@
+<div class="modal fade" name="modalUserEditForm" role="dialog">
+    <div class="modal-dialog">
+    <!-- Modal content -------------------------------------------------------->
+    <div class="modal-content">
+        
+        <!-- modal header ----------------------------------------------------->
+        <div class="modal-header">
+            <h4 class="modal-title">Edit user data</h4>
+            <button type="button" class="close" ng-click="hide()" 
+                data-dismiss="modal" tabindex="-1">
+                    &times;
+            </button>
+        </div>
+        <!-- modal body --------------------------------------- modal header -->
+        <div class="modal-body">
+                        
+            <div>
+                User ID:  {{ modalUserEditUserId }}
+            </div>
+            
+            <!--- user-name  minlength=3 -------------------------------------->
+            <div class="input-group mt-1">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">User name</label>
+                </div>
+            <input type="text" class="form-control" placeholder="Enter Username"
+                ng-model="modalUserEditUserName"
+                id="modalUserEditUserName">
+            </div>
+            
+            <!--- user-first-name --------------------------------------------->
+            <div class="input-group mt-1">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">First name</label>
+                </div>
+            <input type="text" class="form-control" placeholder="Enter first name"
+                ng-model="modalUserEditFirstName"
+                id="modalUserEditUserFirstName">
+            </div>
+            
+            <!--- user-last-name ---------------------------------------------->
+            <div class="input-group mt-1">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Last name</label>
+                </div>
+            <input type="text" class="form-control" placeholder="Enter last name"
+                ng-model="modalUserEditLastName"
+                id="modalUserEditLastName">
+            </div>
+            
+            <!--- user-external-id -------------------------------------------->
+
+            
+            <div class="input-group mt-1">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">External Id</label>
+                </div>
+            <input type="text" class="form-control" placeholder="Enter external id"
+                ng-model="modalUserEditExternalId"
+                id="modalUserEditExternalId"
+            </div>
+            
+            <!--- user-role --------------------------------------------------->
+            <div class="input-group mt-1">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">User role</label>
+                </div>
+            <select class="form-control" ng-model="modalUserEditUserRole" 
+                ng-options="role.name for role in userData.userRoles"
+                id="modalUserEditUserRole">
+            </select>
+            </div>
+                            
+            <!--- user account expiration date -------------------------------->
+            <div class="input-group mt-1">
+                <div class="input-group-prepend" style="width:40%">
+                    <label class="input-group-text w-100">Expiration date</label>
+                </div>
+            <input type="text" class="form-control" 
+                placeholder="DD.MM.YYYY"
+                pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])\.(0[1-9]|1[0-2])\.(19|20)[0-9]{2}"
+                id="modalUserEditUserExpirDate" ng-model="modalUserEditExpirDate"/>
+            </div>
+            
+        </div>
+        <!-- modal footer ------------------------------------- modal header -->
+        <div class="modal-footer">
+            <button type="submit" 
+                class="btn btn-outline-success my-2 my-sm-0" ng-click="submit()"
+                id="loginSubmit">
+                    Submit
+            </button>
+
+            <button type="button" class="btn btn-outline-danger my-2 my-sm-0" 
+                ng-click="hide()" data-dismiss="modal">
+                    Close
+            </button>
+        </div>
+        
+    </div><!------------------------------------------------- modal content --->
+    </div><!-------------------------------------------------- modal dialog --->
+</div>
+

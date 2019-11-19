@@ -1,0 +1,48 @@
+<form name="clientUpdateStaticForm" id="clientUpdateStaticForm" class="needs-validation" novalidate>
+    <!--- old password -------------------------------------------------------->
+    <div class="form-group">
+        <label>Old Password</label>
+        <input type="password" class="form-control" 
+            placeholder="Enter old password"
+            ng-model="userOldPassword">
+    </div>
+    
+    <!--- new password -------------------------------------------------------->
+    <div class="form-group">
+        <label>New password</label>
+        <input type="password" class="form-control" 
+            placeholder="Enter new password"
+            ng-model="userNewPassword">
+    </div>
+    
+    <!--- new password confirm ------------------------------------------------>
+    <div class="form-group">
+        <label>Confirm new password</label>
+        <input type="password" class="form-control" 
+            placeholder="Repeat new password"
+            ng-model="repeatNewPassword">
+    </div>
+    
+    <!--- buttons ------------------------------------------------------------->
+    <div class="form-group">
+        <button ng-click="submit()"
+            class="btn btn-outline-primary my-2 my-sm-0">
+            Submit
+        </button>
+
+        <button type="button" ng-click="clearForm()"
+            class="btn btn-outline-danger my-2 my-sm-0">
+            Cancel
+        </button>
+        
+        <button type="button" class="btn btn-success" ng-if="submitStatus.update">
+            Success
+        </button>
+        <button type="button" class="btn btn-danger" ng-if="submitStatus.failed">
+            Failed
+        </button>
+    </div>
+    <div style="font-size : small">
+        Message : {{ submitStatus.message }}<br>
+    </div>
+</form>

@@ -1,0 +1,20 @@
+<!--- login-form ---------------------------------------------------------->
+<ul class="navbar-nav">
+    <form class="form-inline">
+        <div class="form-group my-0">
+            <input class="form-control mr-sm-2" type="text" size="10" 
+                autocomplete=off placeholder="Username" list="navbarNavLoginUserList"
+                ng-model="navbarNavLoginUserName">
+            <datalist id="navbarNavLoginUserList">
+               <option data-ng-repeat="user in userData.activeUsers">{{user.name}}</option>
+            </datalist>
+            <input class="form-control mr-sm-2" type="password" size="10"
+                ng-model="navbarNavLoginUserPassword" placeholder="Password">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-cancel" ng-click="submit()">Login</button>
+            <button class="btn btn-cancel" ng-click="clearForm()">Cancel</button>
+            <button class="btn btn-cancel" ng-click="logout()">Logout</button>
+        </div>
+    </form>
+</ul>
