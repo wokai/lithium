@@ -41,7 +41,7 @@ switch ($action) {
         break;
         
     case 'science_db_select':
-        $result = $connection->select($data['table'], $data['params'], $request['id']);
+        $result = $connection->select($data['table'], $data['params'], $data['id'], $data['order'], $data['limit']);
         $logger->info('Database select requested for table '.$data['table']);
         break;
     

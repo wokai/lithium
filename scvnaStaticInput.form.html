@@ -1,7 +1,7 @@
 
 
 <div class="card shadow-sm bg-white rounded ml-3" >
-    <div class="card-header" style="height: 80px">
+    <div class="card-header">
         Sectio SPA Vasopressor Studie
         <span class="float-right text-muted">
             <button type="button" class="btn btn-light btn-sm" disabled>
@@ -18,23 +18,24 @@
             </button>
             <button type="button" ng-click="clearScvnaForm()"
                 auth-role-enable="scvna_write"
-                class="btn btn-outline-warning btn-sm ml-3">
+                class="btn btn-outline-warning btn-sm ml-3" refresh-login>
                 Neuer Datensatz
             </button>
             <button type="button" ng-click="finalizeRecord()"
                 class="btn btn-outline-danger btn-sm ml-3"
-                ng-disabled="scvnaRecordForm.$invalid">
+                ng-disabled="scvnaRecordForm.$invalid" refresh-login>
                 Abschließen
             </button>
             <button type="button" ng-click="saveScvnaRecord()"
                 class="btn btn-outline-success btn-sm ml-3"
-                ng-disabled="scvnaRecordForm.$invalid">
+                ng-disabled="scvnaRecordForm.$invalid" refresh-login>
                 Speichern
             </button>
         </span>
-        <br>
-        <div class="mt-2">
-            <span class="text-secondary mr-1" style="display: inline-block; vertical-align: top;"
+    </div>
+    
+    <div class="card-header">
+        <span class="text-secondary mr-1" style="display: inline-block; vertical-align: top;"
                 data-toggle="tooltip" data-placement="right"
                 title="Unterformular Status">
                 Status:
@@ -50,15 +51,16 @@
             <indicator dirty="{{scvnaNewBornForm.$dirty}}" valid="{{scvnaNewBornForm.$valid}}" label="NG"></indicator>
             <indicator dirty="{{scvnaPostOpForm.$dirty}}" valid="{{scvnaPostOpForm.$valid}}" label="BV"></indicator>
             <indicator dirty="{{scvnaDermIschemiaForm.$dirty}}" valid="{{scvnaDermIschemiaForm.$valid}}" label="DI"></indicator>
-        </div>
     </div>
-
+    
     <!--- ! This defines the total height of the card-content ! --->
-    <div style="height: 600px; overflow: auto;">
+    <div style="height: 700px; overflow: auto;">
     <form name="scvnaForm" id="scvnaForm">
+        
+
     
     <!--- Record (DT)                       ----------------------------------->
-    <div class="card-body border-top" id="record-dt">
+    <div class="card-body" id="record-dt">
     <div ng-form="scvnaRecordForm" name="scvnaRecordForm" id="scvnaRecordForm" 
         class="needs-validation" novalidate>
     <fieldset ng-disabled="!formEditable">

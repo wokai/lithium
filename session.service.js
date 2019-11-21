@@ -396,15 +396,12 @@ app.factory('AuthService', function($http, $rootScope) {
             loginToken : loginToken
         }
     
-        $http.post('authActions.php', data).then(function(response){
-            
-            console.debug('[refreshLoginTimer]:');
-            console.debug(response);
-
-        }, function(response){
-            console.warn('[refreshLoginTimer] failed: (' 
+        $http.post('authActions.php', data).then(function(response){}, 
+            function(response){
+                console.warn('[refreshLoginTimer] failed: (' 
                 + response.status + ') ' + response.statusText);
-        });
+            }
+        );
     }
     
     var saveLogin = function(userName, password, callback){
@@ -562,6 +559,7 @@ app.factory('Session', function(AuthService, $interval){
     }
     
     
+    
     ////////////////////////////////////////////////////////////////////////////
     // Session timer
     ////////////////////////////////////////////////////////////////////////////
@@ -695,8 +693,8 @@ app.factory('Session', function(AuthService, $interval){
     
     var logout = function(){
         setLogout();
-        AuthService.saveLogout();
         notifyStatusObservers();
+        AuthService.saveLogout();
     }
     
     var sessionLogin = function(data){

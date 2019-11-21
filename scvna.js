@@ -120,7 +120,7 @@
                 scope.setRecord = ctrl.setRecord;
                 scope.permission = ctrl.permission;
                 
-                var tableDateFormat = 'DD.MM.YYYY';
+                var tableDateFormat = 'DD.MM.YY';
                 
                 scope.formatDate = function(date){
                     return moment().format(tableDateFormat);
@@ -130,13 +130,14 @@
                     
                     var data = {
                         table : 'scvna',
-                        params : [ 'id', 'mrn', 'opcase', 'date']   // leave out params for '*'
+                        params : [ 'id', 'mrn', 'opcase', 'date'],   // leave out params for '*'
+                        order : 'desc'
+                        //id : 18 // leave out for all records
                     };
                     
                     var request = {
                         action : 'science_db_select',
                         data : data
-                        //id : 18 // leave out for all records
                     };
                     
                     $http.post('scienceActions.php', request).then(function(response){
@@ -226,7 +227,6 @@
                         permission.read = false;
                     }
                     
-                    
                     scope.formEditable = scope.userPermission.admin ||
                         scope.userPermission.write &&
                             (scope.formStatus != status.final);
@@ -235,7 +235,11 @@
                         (scope.formStatus == status.create);
 
                 }
+                
                 Session.registerStatusObserver(scope.updateFormStatus);
+                scope.$on('$destroy', function() {
+                    Session.deRegisterStatusObserver(scope.updateFormStatus);
+                });
                 
                 scope.setFormStatus = function(status){
                     if(status !== undefined){
@@ -512,7 +516,7 @@
                         scope.responseStatus.message = response.data.status.message;
                         scope.subjectId = response.data.status.insert_id;
                         scope.subject.id = scope.subjectId;
-                        //scope.scvnaForm.$setPristine();
+                        scope.scvnaForm.$setPristine();
                         
                         // 2) Write rest of form-data into database
                         scope.insertNewScvnaRecord();
@@ -599,9 +603,8 @@
                 }
                 
                 scope.finalizeRecord = function() {
-                    scope.formStatus = status.final;
+                    scope.setFormStatus(status.final);
                     scope.saveScvnaRecord();
-                    scope.updateFormStatus();
                 }
 
 
@@ -774,13 +777,13 @@
                 scope.getScvnaRecord = function(id){
                     
                     var data = {
-                        table : 'scvna' // no params -> SELECT *
+                        table : 'scvna', // no params -> SELECT *
+                        id : id
                     };
                     
                     var request = {
                         action : 'science_db_select',
-                        data : data,
-                        id : id
+                        data : data
                     };
                     
                     $http.post('scienceActions.php', request).then(function(response){

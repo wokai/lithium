@@ -45,6 +45,7 @@ app.directive('authStatusPopover', function(AuthService){
                 
                 element.attr('data-content', scope.content);
             }
+            scope.updateSessionStatus();
             
             element.popover({
                 trigger: 'hover',
@@ -55,7 +56,9 @@ app.directive('authStatusPopover', function(AuthService){
             });
             
             AuthService.registerStatusObserver(scope.updateSessionStatus);
-            scope.updateSessionStatus();
+            scope.$on('$destroy', function() {
+                AuthService.deRegisterStatusObserver(scope.scope.updateSessionStatus);
+            });
         }
     };
 });
@@ -121,8 +124,13 @@ app.directive('authIfLogin', function($animate, $compile, Session){
                     }
                 }
             };
-            Session.registerStatusObserver(loginChange);
             loginChange();
+            
+            Session.registerStatusObserver(loginChange);
+            $scope.$on('$destroy', function() {
+                Session.deRegisterStatusObserver(loginChange);
+            });
+            
         }   // link
     };      // return 
 });   
@@ -142,8 +150,12 @@ app.directive('authRoleEnable', function(Session){
                     element.attr('disabled', true);
                 }
             };
-            Session.registerStatusObserver(loginChange);
             loginChange();
+            
+            Session.registerStatusObserver(loginChange);
+            scope.$on('$destroy', function() {
+                Session.deRegisterStatusObserver(loginChange);
+            });
         }
     }
 });
@@ -201,8 +213,13 @@ app.directive('authIfRole', function($animate, $compile, Session) {
                 }
 
             };
-            Session.registerStatusObserver(loginChange);
             loginChange();
+            
+            Session.registerStatusObserver(loginChange);
+            $scope.$on('$destroy', function() {
+                Session.deRegisterStatusObserver(loginChange);
+            });
+            
         }   // link
     };      // return
 });         // directive
@@ -232,6 +249,13 @@ app.directive('loginStatusPopover', function(Session){
                 
                 element.attr('data-content', scope.content);
             }
+            scope.updateSessionStatus();
+
+            Session.registerStatusObserver(scope.updateSessionStatus);
+            scope.$on('$destroy', function() {
+                Session.deRegisterStatusObserver(scope.updateSessionStatus);
+            });
+
             
             element.popover({
                 trigger: 'hover',
@@ -241,8 +265,7 @@ app.directive('loginStatusPopover', function(Session){
                 container: 'body'
             });
             
-            Session.registerStatusObserver(scope.updateSessionStatus);
-            scope.updateSessionStatus();
+
         }
     };
 });
@@ -487,11 +510,15 @@ app.directive('clientDataUpdateStaticForm', function(Session){
                 }
                 scope.clearForm();
             }
+            
             Session.registerStatusObserver(scope.initializeForm);
+            scope.$on('$destroy', function() {
+                Session.deRegisterStatusObserver(scope.initializeForm);
+            });
+            
         }, // link
         controller: function($scope, $element, $attrs){
             
-
             $scope.$watch('clientUpdateStaticForm.$dirty', function(newVal, oldVal){
                 if(newVal){
                     $scope.submitStatus.failed = false;
@@ -562,6 +589,9 @@ app.directive('modalClientEditDataForm', function(Session){
                 element.modal(newVal ? 'show' : 'hide');
             });
             
+            scope.$on('$destroy', function() {
+                element.modal('hide');
+            });
             
             //------------------------------------------------------------//
             // Submit edited data
@@ -642,6 +672,10 @@ app.directive('modalUserResetPassword', function(Session){
                 element.modal(newVal ? 'show' : 'hide');
             });
             
+            scope.$on('$destroy', function() {
+                element.modal('hide');
+            });
+            
             scope.hide = function(){
                 scope.data.visible = false;
                 scope.newPassword = '';
@@ -661,6 +695,7 @@ app.directive('modalUserResetPassword', function(Session){
             scope.doResetPassword = function(userId) {
                 Session.resetUserPassword(userId, scope.callback);
             }
+
         }
     }
 });
@@ -709,7 +744,9 @@ app.directive('modalUserEditForm', function(Session){
                 }
             });
             
-
+            scope.$on('$destroy', function() {
+                element.modal('hide');
+            });
             
             //------------------------------------------------------------//
             // Login submit
@@ -787,6 +824,10 @@ return {
         scope.data = ctrl.data;
         scope.$watch('data.visible', function(newVal, oldVal, scope){
             element.modal(newVal ? 'show' : 'hide');
+        });
+        
+        scope.$on('$destroy', function() {
+            element.modal('hide');
         });
         
         scope.userData = Session.getUserRoles();
@@ -900,37 +941,6 @@ return {
         }
     }
 }});
-
-
-app.directive('modal', function () {
-    return {
-        templateUrl: 'modal.html',
-        restrict: 'E',
-        transclude: true,
-        replace:true,
-        scope:true,
-        link: function postLink(scope, element, attrs) {
-            scope.title = attrs.title;
-
-            scope.$watch(attrs.visible, function(value){
-                element.modal(value ? 'show' : 'hide');
-            });
-
-
-            $(element).on('shown.bs.modal', function(){
-                scope.$apply(function(){
-                    scope.$parent[attrs.visible] = true;
-                });
-            });
-
-            $(element).on('hidden.bs.modal', function(){
-                scope.$apply(function(){
-                    scope.$parent[attrs.visible] = false;
-                });
-            });
-        }
-    };
-});
 
 
 })(window.angular);

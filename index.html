@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+
+<!--- head -------------------------------------------------------------------->
+<head>
+<title>Angular authentification</title>
+
+<!--- import javascript ------------------------------------------------------->
+<link rel="stylesheet" href="../../src/typeahead_template.css">
+<link rel="stylesheet" href="../../src/bootstrap.min.css">
+<script src="../../src/jquery.min.js"></script><!-- Modal popup -->
+<script src="../../src/popper.min.js"></script>
+<script src="../../src/bootstrap.min.js"></script>
+<script src="../../src/typeahead.js"></script>
+<script src="../../src/angular.min.js"></script>
+<script src="../../src/moment.min.js"></script>
+<script src="../../src/angular-animate.min.js">
+</script>
+<!--- set standard style ------------------------------------------------------>
+<style>
+
+// 0    123 255 #007bff primary
+// 220  53  69  #dc3545 danger
+// 255  193 7   #ffc107 warning
+// 40   167 69  #28a745 success
+// 23   162 184 #17a2b8 info
+// 248  249 250 #f8f9fa light
+// 134  142 150 #868e96 secondary
+// 52   58  64  #343a40 dark
+
+:root{
+    --bg-primary: #007bff;
+    --bg-danger: #dc3545;
+    --bg-warning: #ffc107;
+    --bg-success: #28a745;
+    --bg-info: #17a2b8;
+    --bg-light: #f8f9fa;
+    --bg-secondary: #868e96;
+    --bg-dark: #343a40;
+}
+
+    
+div.indicator{
+    border: 2px solid var(--bg-primary);
+    border-radius: 5px; 
+    padding:5px;
+}
+
+div.admin-frame{
+    border: 2px solid var(--bg-primary);
+    border-radius: 5px; 
+    padding:5px;
+}
+
+
+div.editor-frame{
+    border: 2px solid var(--bg-danger);
+    border-radius: 5px; 
+    padding: 5px;
+}
+
+div.guest-frame{
+    border: 2px solid var(--bg-secondary);
+    border-radius: 5px; 
+    padding: 5px;
+}
+
+div.login-frame{
+    border: 2px solid var(--bg-dark);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+div.logout-frame{
+    border: 2px solid var(--bg-danger);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+div.tab-content{
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 10px;
+}
+
+.animate-if-enter {
+}
+
+.animate-if-enter.ng-enter {
+    transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s;
+}
+
+.animate-if-enter.ng-enter,
+.animate-if-enter.ng-leave.ng-leave-active {
+    opacity:0;
+}
+
+.animate-if-enter.ng-leave,
+.animate-if-enter.ng-enter.ng-enter-active {
+    opacity:1;
+}
+
+
+form .science.ng-invalid.ng-dirty {
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(255, 165, 0, 0.7);
+    background-color: rgba(255, 165, 0, 0.15);
+}
+
+form .science.ng-valid.ng-dirty {
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(0, 255, 0, 0.75);
+    background-color: rgba(0, 255, 0, 0.1);
+}
+
+
+.linkDisabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  color: grey;
+}
+
+.colorSuccess {
+    color: rgba(40, 167, 69, 0.6);
+}
+
+.colorDanger {
+    color: rgba(220, 53, 69, 0.5);
+}
+
+.colorSubmitted {
+    color: rgba(40, 167, 69, 0.6);
+}
+
+.colorInvalid {
+    color: rgba(220, 53, 69, 0.5);
+}
+
+.colorValid {
+    color: rgba(0, 123, 255, 0.5);
+}
+
+.colorPristine {
+    color: rgba(23, 162, 184, 0.5);
+}
+
+.colorDirty {
+    color : rgba(134, 142, 150, 0.5);
+}
+
+</style>
+<!----------------------------------------------------------------------------->
+<script>
+var app = angular.module('globalModule', ['ngAnimate']);
+    
+app.controller('GlobalCtrl', function globalCtrl($scope, $rootScope, Session){
+    var ctrl = this;
+    
+    ctrl.title = "Science data";
+    $scope.logout = Session.logout;
+    //$scope.credentials = Session.getCredentials();
+
+    $scope.refreshLogin = function() {
+        Session.checkLastLogin();
+        Session.refreshLoginTimer();
+    }
+        
+});
+
+</script>
+<script src="session.service.js"></script>
+<script src="session.directives.js"></script>
+<script src="scvna.js"></script>
+</head>
+<!--- body ----------------------------------------------------------- head --->
+<body ng-app="globalModule" ng-controller='GlobalCtrl as global'>
+
+<!--- static top navigation bar ----------------------------------------------->
+<nav class="nav navbar bg-primary">
+    <ul class="nav md-pills pills-primary bg-primary">
+        
+        <li class="nav-item">
+            <a class="nav-link active text-white" data-toggle="tab" href="#tabScvna">Vasopressor Studie</a>
+        </li>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+              aria-expanded="false">Formulare</a>
+            <div class="dropdown-menu dropdown-success">
+              <a class="dropdown-item" data-toggle="tab" href="#tabScvna">Vasopressor Studie</a>
+              <a class="dropdown-item" data-toggle="tab" href="#tabFormTwo">Form two</a>
+              <a class="dropdown-item" data-toggle="tab" href="#tabFormThree">Form three</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" data-toggle="tab" href="#tabNoWhere">(Empty)</a>
+            </div>
+        </li>
+                
+        <li class="nav-item" auth-if-login="true">
+            <a class="nav-link text-white" data-toggle="tab" href="#tabuser">User</a>
+        </li>
+        
+        <li class="nav-item" auth-if-role="sys_admin">
+            <a class="nav-link text-white" data-toggle="tab" href="#tabUserAdmin">Admin</a>
+        </li>
+        
+    </ul>
+    <ul class="nav">
+        <li class="nav-item">
+            <!--- login-form: clientMangager ---------------------------------->
+            <navbar-nav-login-form></navbar-nav-login-form>
+            <!--- right-hand side: Login indicator ---------------------------->
+        </li>
+        <li class="nav-item">
+            <span class="navbar-text align-middle px-1 text-white"
+                    style="width: 50px; text-align:right;" login-status-popover>
+                User:
+            </span>
+            <span class="navbar-text align-middle text-white"
+                    style="width: 80px; text-align:left;" user-name>
+                Logout
+            </span>
+           
+            <span class="navbar-text align-middle text-white"
+                style="width: 80px; text-align:left;" session-status refresh-login>
+                {{ status.timer }}
+            </span>
+        </li>
+    </ul>
+</nav>
+
+<div class="row">
+<div class="tab-content col-12 mt-2">
+    <!--- home tab -------------------------------------------------------->
+    <div class="tab-pane fade" id="tabhome" role="tabpanel">
+        <div class="card shadow bg-white rounded m-3">
+            <div class="card-header">
+                Home
+            </div>
+            <div class="card-body">
+                Card body <br>
+            </div> 
+        </div>  <!--- card --->
+    </div>
+
+
+    <!--- example form tabs ----------------------------------------------->
+    <div class="tab-pane fade show active mr-3" id="tabScvna" role="tabpanel">
+        <scvna></scvna>
+    </div>
+
+    <div class="tab-pane fade" id="tabFormTwo" role="tabpanel">
+        <div class="card shadow bg-white rounded m-3">
+            <div class="card-header">
+                Form two
+            </div>
+            <div class="card-body">
+                Card body
+            </div> 
+        </div>  <!--- card --->
+    </div>
+
+    <div class="tab-pane fade" id="tabFormThree" role="tabpanel">
+        <div class="card shadow bg-white rounded m-3">
+            <div class="card-header">
+                Form three
+            </div>
+            <div class="card-body">
+                Card body
+            </div> 
+        </div>  <!--- card --->
+    </div>
+    
+    <!-- empty tab -------------------------------------------------------->
+    <div class="tab-pane fade" id="tabNoWhere" role="tabpanel">
+        <div class="card shadow bg-white rounded m-3">
+            <div class="card-header">
+                Empty tab
+            </div>
+            <div class="card-body">
+                Card body
+            </div> 
+            <div class="card-body border-top">
+                (empty)
+            </div>
+        </div>  <!--- card --->
+    </div>
+    
+    <!--- user (client) organizer -------------------- example form tabs -->
+    <div class="tab-pane fade" id="tabuser" role="tabpanel" auth-if-login="true">
+        <div class="row mx-1">
+            <div class="col-md-4">
+                <div class="card shadow bg-white rounded">
+                    <div class="card-header">
+                        Update user password
+                    </div>
+                    <div class="card-body p-2">
+                        <client-data-update-static-form>
+                        </client-data-update-static-form>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-md-6">User name: </div>
+                            <div class="col-md-6" user-name>(Logout)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card shadow-sm bg-white rounded mx-1 p-1">
+                    <span>
+                        <button class="btn btn-default" auth-status-popover>
+                            Auth Status
+                        </button>
+                        <button class="btn btn-outline-info" session-log-out>
+                            Logout
+                        </button>
+                        <modal-client-edit-data></modal-client-edit-data>
+                    </span>
+                </div>
+                <div class="card shadow-sm bg-white rounded m-1">
+                    <div class="card-header" >
+                        User login table
+                    </div>
+                    <div class="card-body">
+                        <user-login-table></user-login-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- user administration ------------------- user (client) organizer -->
+    <div class="tab-pane fade" id="tabUserAdmin" role="tabpanel" auth-if-role="sys_admin">
+        <div class="card shadow bg-white rounded m-3">
+            <div class="card-header">
+                User administration
+            </div>
+            <div class="card-body">
+                <user-data-table></user-data-table>
+            </div> 
+        </div>  <!--- card --->
+    </div>
+
+</div>  <!-- tab-content -->
+    
+
+</div>
+
+
+</body>
+</html>
+
