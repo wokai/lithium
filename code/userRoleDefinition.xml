@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<role name="sys_admin">
+    <role name="user_manager"></role>
+    <role name="scvna_admin">
+        <role name="scvna_write">
+            <role name="scvna_read"></role>
+        </role>
+    </role>
+    <role name="anonymous"></role>
+</role>
+
