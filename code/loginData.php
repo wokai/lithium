@@ -21,18 +21,21 @@
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 
-class User
-{
-    public $id;
-    public $userName;
-    public $userRole;
-    public $roleName;
-    public $firstName;
-    public $lastName;
-    public $externalId;
-    public $expirDate;
-    public $passWord; 
-    public $passwordHash;
-}
+////////////////////////////////////////////////////////////////////////////////
+// Separate file with login credentials, allowing system update via public
+// repository without exposure of user-names and passwords.
+////////////////////////////////////////////////////////////////////////////////
 
+
+class LoginData {
+
+    public const auth_database = 'auth-db-name';
+    public const auth_user = 'login-user-name';
+    public const auth_password = 'pass-word';
+    
+    public const science_database = 'science-db-name';
+    public const science_user = 'login-user-name';
+    public const science_password = 'pass-word';
+
+}
 ?>

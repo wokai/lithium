@@ -1,14 +1,32 @@
 <?php
-// Should be located in the same directory as me
+
+/*******************************************************************************
+ * The MIT License
+ * Copyright 2019, Wolfgang Kaisers
+ * Permission is hereby granted, free of charge, to any person obtaining a 
+ * copy of this software and associated documentation files (the "Software"), 
+ * to deal in the Software without restriction, including without limitation 
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to whom the 
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included 
+ * in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+ * USE OR OTHER DEALINGS IN THE SOFTWARE.
+ ******************************************************************************/
+
 require_once(__DIR__.'/user.php');
 require_once(__DIR__.'/mySqlConnection.php');
 require_once(__DIR__.'/session.php');
 require_once(__DIR__.'/mysqlSessionHandler.php');
+require_once(__DIR__.'/loginData.php');
 
-
-////////////////////////////////////////////////////////////////////////////////
-// CREATE DATABASE auth;
-////////////////////////////////////////////////////////////////////////////////
 
 class AuthDbConnection extends MySqlConnection {
 
@@ -16,7 +34,10 @@ class AuthDbConnection extends MySqlConnection {
     private $session;
 
     public function __construct() {
-        parent::__construct('localhost', 'auth', 'xxxx', 'xxxx');
+        parent::__construct('localhost',
+            LoginData::auth_database,
+            LoginData::auth_user,
+            LoginData::auth_password);
         
         $handler = new MySqlSessionHandler($this->connection);
         $this->session = Session::getInstance($handler);
