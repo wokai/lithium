@@ -78,7 +78,7 @@ app.directive('authStatusPopover', function(AuthService){
             
             AuthService.registerStatusObserver(scope.updateSessionStatus);
             scope.$on('$destroy', function() {
-                AuthService.deRegisterStatusObserver(scope.scope.updateSessionStatus);
+                AuthService.deRegisterStatusObserver(scope.updateSessionStatus);
             });
         }
     };

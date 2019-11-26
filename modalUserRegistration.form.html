@@ -111,18 +111,16 @@
             </div>
             
             <div class="col-8">
-            <input type="text" class="form-control bg-transparent"
-                ng-model="user.passWord" placeholder="Password"
-                data-toggle="tooltip" data-placement="bottom" 
-                title="Wird bei Registrierung zurück gegeben" disabled
-                ng-class="{'is-valid': status.success, 'is-invalid' : status.failed}">
-            </div>
-            </div>
+            <input type="text" class="form-control bg-transparent" 
+            ng-class="{'is-valid': status.success, 'is-invalid' : status.failed}"
+                readonly
+                ng-model="user.passWord">
             
             <div class="text-secondary ml-1" 
                     style="font-size: small;">
                     {{ status.message }}
             </div>
+            </div> 
         </div>
         <!-- modal footer ----------------------------------------------------->
         <div class="modal-footer">
